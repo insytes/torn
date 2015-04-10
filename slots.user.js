@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name          Torn - Slots
-// @namespace     http://userstyles.org
+// @namespace     https://github.com/ianbrind/torn/raw/master/slots.user.js
 // @description   Play 5 tokens at once
 // @author        Fitchett
 // @include       http://www.torn.com/loader.php?sid=slots
@@ -10,6 +10,7 @@
 // @version       0.1
 // ==/UserScript==
 (function(){
+    // these could be user assigned at some point
     var betAmt = 10,
         moneyWon = 0,
         tokenBatch = 5,
