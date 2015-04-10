@@ -55,7 +55,9 @@
     }
     
     btn.addEventListener("click", function() {
-        if (casinoTokens == 0) {
+        casinoTokens =- tokenBatch;
+        
+        if (casinoTokens < 1) {
             return;
         }
 
@@ -63,7 +65,7 @@
 
         tmpTotalMoney = totalMoney - (casinoTokens * betAmt);
 
-        for (i=0; i<casinoTokens; i++) {
+        for (i=0; i<tokenBatch; i++) {
             rfc = getRFC();
             play(i, rfc);
         }
