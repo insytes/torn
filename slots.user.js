@@ -11,26 +11,38 @@
 // ==/UserScript==
 (function()
 {
-    // these could be user assigned at some point
-    var betAmt = 10,
-        moneyWon = 0,
-        tokenBatch = 5,
-        tmpTotalMoney = 0,
-        slotUrl = "loader.php",
-        btn = document.createElement("button"),
-        slots = document.getElementsByClassName("slots-wrap")[0],
-        casinoTokens = parseInt(document.getElementById("tokens").innerText),
-        totalMoney = parseInt(document.getElementById("moneyAmount").innerText.replace(",", ""));
-    
-    slots.parentNode.insertBefore(btn, slots.nextSibling);
+    var player = {
+        "casinoTokens": parseInt(document.getElementById("tokens").innerText),
+        "totalMoney": parseInt(document.getElementById("moneyAmount").innerText.replace(",", ""))
+    };
 
-    if (casinoTokens == 0)
+    var slots = {
+        "machine": document.getElementsByClassName("slots-wrap")[0] 
+    };
+
+    var domNodes = {
+        "btn": document.createElement("button") 
+    };
+
+    var io = {
+        "betAmt": 10,
+        "moneyWon": 0,
+        "batch": 2
+    };
+
+    var tmp = {
+        "totalMoney": 0
+    };
+    
+    slots.machine.parentNode.insertBefore(domNodes.btn, slots.machine.nextSibling);
+
+    if (player.casinoTokens < 1)
     {
-        btn.innerText = "No tokens";
+        domNodes.btn.innerText = "No tokens";
         return;
     }
 
-    btn.innerText = "Play 5 tokens ($10)";
+    domNodes.btn.innerText = "Play 5 tokens ($10)";
 
     function play(tokens, rfc)
     {
@@ -39,38 +51,38 @@
             data: {
                 sid: "slotsInterface",
                 step: "play",
-                stake: betAmt,
+                stake: io.betAmt,
                 rfcv: rfc
             },
             success: function (response) {
                 o = JSON.parse(response);
-                var moneyWon =+ parseInt(o.moneyWon);
+                io.moneyWon =+ parseInt(o.moneyWon);
 
                 // last spin
                 if (tokens === 1) {
-                    var newTotalMoney = tmpTotalMoney + moneyWon;
-                    var text = "You just " + (newTotalMoney >= totalMoney ? "won" : "lost") + "  $";
+                    var newTotalMoney = tmp.totalMoney + io.moneyWon;
+                    var text = "You just " + (newTotalMoney >= player.totalMoney ? "won" : "lost") + "  $";
 
-                    btn.innerText = text + parseFloat(Math.abs(newTotalMoney - totalMoney));
+                    domNodes.btn.innerText = text + parseFloat(Math.abs(newTotalMoney - player.totalMoney));
                 }
             }
         });
     }
     
-    btn.addEventListener("click", function()
+    domNodes.btn.addEventListener("click", function()
     {
         
-        if (casinoTokens < 1)
+        if (player.casinoTokens < 1)
         {
-            btn.innerText = "No tokens";
+            domNodes.btn.innerText = "No tokens";
             return;
         }
 
-        tmpTotalMoney = totalMoney - (casinoTokens * betAmt);
+        tmp.totalMoney = player.totalMoney - (player.casinoTokens * io.betAmt);
         
         var i, rfc;
 
-        for (i = 0; i < tokenBatch; i++)
+        for (i = 0; i < io.batch; i++)
         {
             rfc = getRFC();
             play(i, rfc);
