@@ -9,7 +9,8 @@
 // @run-at        document-end
 // @version       0.1
 // ==/UserScript==
-(function(){
+(function()
+{
     // these could be user assigned at some point
     var betAmt = 10,
         moneyWon = 0,
@@ -23,14 +24,16 @@
     
     slots.parentNode.insertBefore(btn, slots.nextSibling);
 
-    if (casinoTokens == 0) {
+    if (casinoTokens == 0)
+    {
         btn.innerText = "No tokens";
         return;
     }
 
     btn.innerText = "Play 5 tokens ($10)";
 
-    function play(tokens, rfc) {
+    function play(tokens, rfc)
+    {
         $.ajax({
             type: "GET",
             data: {
@@ -54,18 +57,21 @@
         });
     }
     
-    btn.addEventListener("click", function() {
-        casinoTokens =- tokenBatch;
+    btn.addEventListener("click", function()
+    {
         
-        if (casinoTokens < 1) {
+        if (casinoTokens < 1)
+        {
+            btn.innerText = "No tokens";
             return;
         }
 
+        tmpTotalMoney = totalMoney - (casinoTokens * betAmt);
+        
         var i, rfc;
 
-        tmpTotalMoney = totalMoney - (casinoTokens * betAmt);
-
-        for (i=0; i<tokenBatch; i++) {
+        for (i = 0; i < tokenBatch; i++)
+        {
             rfc = getRFC();
             play(i, rfc);
         }
